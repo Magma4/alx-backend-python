@@ -21,9 +21,9 @@ def connect_db():
         print(f"There was an error connecting to MySQL: {e}")
         return None
 
-def paginate_users(connection, page_size, offset):
+def paginate_users(page_size, offset):
     try:
-        user_data = connection.cursor(cursor=pymysql.cursors.DictCursor)
+        user_data = connect_db().cursor(cursor=pymysql.cursors.DictCursor)
         query = f"SELECT * FROM user_data LIMIT {page_size} OFFSET {offset}"
         user_data.execute(query)
         return user_data.fetchall()
@@ -40,7 +40,7 @@ def lazy_paginate(page_size):
     try:
         offset = 0
         while True:
-            page = paginate_users(connection, page_size, offset)
+            page = paginate_users( page_size, offset)
             if not page:  
                 break
             yield page
