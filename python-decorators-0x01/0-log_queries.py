@@ -3,6 +3,7 @@ import pymysql
 from mysql.connector import Error
 from dotenv import load_dotenv, dotenv_values
 import os
+from datetime import datetime
 
 load_dotenv()
 
@@ -24,8 +25,9 @@ def connect_db():
 def log_queries(func):
     
     def wrapper(*args, **kwargs):
-        query = args[1]  # Assuming the second argument is the SQL query
-        print(f"Executing SQL query: {query}")
+        query = args[1] 
+        print(f"{datetime.now()}: called {func.__name__} with args {args}")
+        print(f"{datetime.now()}: called {func.__name__} returned {query}")
         return func(*args, **kwargs)
     return wrapper
 
