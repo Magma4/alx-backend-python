@@ -62,6 +62,6 @@ def insert_user(connection, user_id, name, email, age):
 
 if __name__ == "__main__":
     try:
-        insert_user("123e4567-e89b-12d3-a456-426614174002", "Jane Doe", "jane.doe@example.com", 29)
+        insert_user("123e4567-e89b-12d3-a456-426614175112", "Raymond Frimpong", "raymond.frimpong@gmail.com", 29)
     except Exception as e:
         print(f"Error inserting user: {e}")
