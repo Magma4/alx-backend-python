@@ -1,23 +1,22 @@
-import mysql.connector
-from mysql.connector import Error
+import pymysql
 import csv
 import uuid
 import os
-from dotenv import load_dotenv, dotenv_values
+from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(dotenv_path=".env")
 
 def connect_db():
     try:
-        connection = mysql.connector.connect(
+        print(f"Connecting to MySQL server with user: {os.getenv('MYSQL_USER')}")
+        connection = pymysql.connect(
             host='localhost',
-            user=os.getenv("MYSQL_USER"), 
+            user=os.getenv("MYSQL_USER"),
             password=os.getenv("MYSQL_PASSWORD")
         )
-        if connection.is_connected():
-            print("Successfully connected to MySQL server")
-            return connection
-    except Error as e:
+        print("Successfully connected to MySQL server")
+        return connection
+    except pymysql.MySQLError as e:
         print(f"There was an error connecting to MySQL: {e}")
         return None
 
@@ -26,21 +25,20 @@ def create_database(connection):
         cursor = connection.cursor()
         cursor.execute("CREATE DATABASE IF NOT EXISTS ALX_prodev")
         print("Successfully created ALX_prodev.")
-    except Error as e:
+    except pymysql.MySQLError as e:
         print(f"Error creating database: {e}")
 
 def connect_to_prodev():
     try:
-        connection = mysql.connector.connect(
+        connection = pymysql.connect(
             host='localhost',
-            user=os.getenv("MYSQL_USER"), 
+            user=os.getenv("MYSQL_USER"),
             password=os.getenv("MYSQL_PASSWORD"),
             database='ALX_prodev'
         )
-        if connection.is_connected():
-            print("Successfully connected to ALX_prodev database")
-            return connection
-    except Error as e:
+        print("Successfully connected to ALX_prodev database")
+        return connection
+    except pymysql.MySQLError as e:
         print(f"There was an error connecting to ALX_prodev database: {e}")
         return None
 
@@ -57,7 +55,7 @@ def create_table(connection):
         """
         cursor.execute(create_table_query)
         print("Successfully created user_data table.")
-    except Error as e:
+    except pymysql.MySQLError as e:
         print(f"There was an error creating table: {e}")
 
 def insert_data(connection, data):
@@ -69,11 +67,11 @@ def insert_data(connection, data):
                     INSERT INTO user_data (user_id, name, email, age)
                     VALUES (%s, %s, %s, %s)
                 """, (str(uuid.uuid4()), row['name'], row['email'], row['age']))
-            except Error as e:
+            except pymysql.MySQLError as e:
                 print(f"Error inserting data: {e}")
         connection.commit()
         print("Successfully inserted data.")
-    except Error as e:
+    except pymysql.MySQLError as e:
         print(f"There was an error inserting data: {e}")
 
 def load_csv_data(filepath):
