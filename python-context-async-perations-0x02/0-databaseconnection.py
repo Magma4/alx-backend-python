@@ -27,7 +27,7 @@ class DatabaseConnection:
 
 
 if __name__ == "__main__":
-    query = "SELECT * FROM user_data WHERE age = 25"
+    query = "SELECT * FROM users"
 
     with DatabaseConnection() as connection:
         user_data = connection.cursor(cursor=pymysql.cursors.DictCursor)
