@@ -3,7 +3,7 @@ import asyncio
 
 DATABASE = "alx_prodev.db"  
 
-async def async_fetch_all_users():
+async def async_fetch_users():
     async with aiosqlite.connect(DATABASE) as db:
         async with db.execute("SELECT * FROM user_data") as cursor:
             rows = await cursor.fetchall()
@@ -12,7 +12,7 @@ async def async_fetch_all_users():
                 print({"id": row[0], "name": row[1], "age": row[2]})
             return rows
 
-async def async_fetch_users_older_than_40():
+async def async_fetch_older_users():
     async with aiosqlite.connect(DATABASE) as db:
         async with db.execute("SELECT * FROM user_data WHERE age > ?", (40,)) as cursor:
             rows = await cursor.fetchall()
@@ -24,8 +24,8 @@ async def async_fetch_users_older_than_40():
 async def fetch_concurrently():
     
     results = await asyncio.gather(
-        async_fetch_all_users(),
-        async_fetch_users_older_than_40()
+        async_fetch_users(),
+        async_fetch_older_users()
     )
     return results
 
