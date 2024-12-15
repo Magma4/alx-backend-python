@@ -7,8 +7,8 @@ Unit tests for the GithubOrgClient class in the client module.
 import unittest
 from unittest.mock import patch, PropertyMock
 from parameterized import parameterized, parameterized_class
-from client import *
-from fixtures import *
+from client import GithubOrgClient
+from fixtures import org_payload, repos_payload, expected_repos, apache2_repos
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -120,8 +120,25 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         cls.get_patcher = patch("requests.get")
         cls.mock_get = cls.get_patcher.start()
 
-        # Set up side effects for mocked requests.get().json()
-        cls.mock_get.return_value.json.side_effect = cls.get_side_effect
+        # Set the side effect for mocked requests.get
+        def mock_get(url):
+            """
+            Mocked `requests.get` behavior.
+            """
+            class MockResponse:
+                def __init__(self, json_data):
+                    self._json_data = json_data
+
+                def json(self):
+                    return self._json_data
+
+            if "orgs" in url:
+                return MockResponse(org_payload)
+            elif "repos" in url:
+                return MockResponse(repos_payload)
+            return MockResponse([])
+
+        cls.mock_get.side_effect = mock_get
 
     @classmethod
     def tearDownClass(cls):
@@ -129,17 +146,6 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         Tear down the test class by stopping the patcher.
         """
         cls.get_patcher.stop()
-
-    @classmethod
-    def get_side_effect(cls, url):
-        """
-        Define side effects for requests.get().json() based on the URL.
-        """
-        if "orgs" in url:
-            return org_payload
-        if "repos" in url:
-            return repos_payload
-        return None
 
     def test_public_repos(self):
         """
