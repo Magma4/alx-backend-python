@@ -6,8 +6,9 @@ Unit tests for the GithubOrgClient class in the client module.
 
 import unittest
 from unittest.mock import patch, PropertyMock
-from parameterized import parameterized
-from client import GithubOrgClient
+from parameterized import parameterized, parameterized_class
+from client import *
+from fixtures import *
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -76,6 +77,85 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(result, expected)
             mock_url.assert_called_once()
             mock_get_json.assert_called_once_with(mock_public_repos_url)
+
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False),
+        ({}, "my_license", False),  # Edge case: no license key
+    ])
+    def test_has_license(self, repo, license_key, expected_result):
+        """
+        Test that GithubOrgClient.has_license correctly checks for licenses.
+        """
+        # Create an instance of GithubOrgClient
+        client = GithubOrgClient("test-org")
+
+        # Call has_license with the repo and license_key
+        result = client.has_license(repo, license_key)
+
+        # Assert the result matches the expected value
+        self.assertEqual(result, expected_result)
+
+
+@parameterized_class([
+    {
+        "org_payload": org_payload,
+        "repos_payload": repos_payload,
+        "expected_repos": expected_repos,
+        "apache2_repos": apache2_repos,
+    }
+])
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """
+    Integration tests for GithubOrgClient.public_repos
+    and public_repos with a license filter.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Set up the test class by patching requests.get
+        and defining the behavior for different endpoints.
+        """
+        cls.get_patcher = patch("requests.get")
+        cls.mock_get = cls.get_patcher.start()
+
+        # Set up side effects for mocked requests.get().json()
+        cls.mock_get.return_value.json.side_effect = cls.get_side_effect
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        Tear down the test class by stopping the patcher.
+        """
+        cls.get_patcher.stop()
+
+    @classmethod
+    def get_side_effect(cls, url):
+        """
+        Define side effects for requests.get().json() based on the URL.
+        """
+        if "orgs" in url:
+            return org_payload
+        if "repos" in url:
+            return repos_payload
+        return None
+
+    def test_public_repos(self):
+        """
+        Test that public_repos returns the expected list of repositories.
+        """
+        client = GithubOrgClient("test-org")
+        result = client.public_repos()
+        self.assertEqual(result, expected_repos)
+
+    def test_public_repos_with_license(self):
+        """
+        Test that public_repos filters repositories by the apache-2.0 license.
+        """
+        client = GithubOrgClient("test-org")
+        result = client.public_repos(license="apache-2.0")
+        self.assertEqual(result, apache2_repos)
 
 
 if __name__ == "__main__":
