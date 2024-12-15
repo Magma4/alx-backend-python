@@ -39,7 +39,10 @@ class TestAccessNestedMap(unittest.TestCase):
         """
         with self.assertRaises(KeyError) as context:
             access_nested_map(nested_map, path)
-        self.assertEqual(str(context.exception), f"'{context.exception.args[0]}'")
+        self.assertEqual(
+            str(context.exception),
+            f"'{context.exception.args[0]}'"
+        )
 
 
 class TestGetJson(unittest.TestCase):
@@ -63,7 +66,9 @@ class TestGetJson(unittest.TestCase):
 
         result = get_json(test_url)
         self.assertEqual(result, test_payload)
-        mock_get.assert_called_once_with(test_url)
+        mock_get.assert_called_once_with(
+            test_url
+        )
 
 
 class TestMemoize(unittest.TestCase):
