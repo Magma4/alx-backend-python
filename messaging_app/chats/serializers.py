@@ -6,12 +6,20 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
 
-class ConversationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Conversation
-        fields = '__all__'
 
 class MessageSerializer(serializers.ModelSerializer):
+    sender = serializers.SerializerMethodField()
     class Meta:
         model = Message
+        fields = '__all__'
+
+    def get_sender(self, User):
+        return {"username": User.sender.username, "email": User.sender.email}
+
+
+class ConversationSerializer(serializers.ModelSerializer):
+    participants = UserSerializer(many=True)
+    messages = MessageSerializer(many=True)
+    class Meta:
+        model = Conversation
         fields = '__all__'
