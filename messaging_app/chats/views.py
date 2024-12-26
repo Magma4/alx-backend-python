@@ -4,6 +4,7 @@ from models import Conversation, Message
 from django.contrib.auth.models import User
 from chats.serializers import ConversationSerializer, MessageSerializer
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 # Create your views here.
@@ -11,6 +12,9 @@ class ConversationViewSet(viewsets.ModelViewSet):
     """Viewset for listing Conversation"""
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['participants']
     
     def create(self, request, *args, **kwargs):
         participants_info = request.data.get('participants', [])
@@ -36,6 +40,8 @@ class MessageViewSet(viewsets.ModelViewset):
         sender_id = request.data.get('sender')
         conversation_id = request.data.get('conversation')
         message_body = request.data.get('message_body')
+        filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['sender', 'conversation']
 
         sender = User.objects.get(user_id=sender_id)
         conversation = Conversation.objects.get(conversation_id=conversation_id)
