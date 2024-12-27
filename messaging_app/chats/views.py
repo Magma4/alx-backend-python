@@ -7,9 +7,16 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import IsParticipant, IsParticipantOfConversation
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
+from .filters import MessageFilter
 
 
 # Create your views here.
+class MessagePagination(PageNumberPagination):
+    """
+    Custom pagination for messages.
+    """
+    page_size = 20
 class ConversationViewSet(viewsets.ModelViewSet):
     """Viewset for listing Conversation"""
     queryset = Conversation.objects.all()
@@ -47,6 +54,8 @@ class MessageViewSet(viewsets.ModelViewset):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['sender', 'conversation']
     permission_classes = [IsAuthenticated, IsParticipantOfConversation]
+    pagination_class = MessagePagination
+    filterset_class = MessageFilter
 
     def get_queryset(self):
         # Filter messages related to conversations the user participates in
