@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 from chats.serializers import ConversationSerializer, MessageSerializer
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from .permissions import IsParticipant
+from .permissions import IsParticipant, IsParticipantOfConversation
+from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
@@ -13,8 +14,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
     """Viewset for listing Conversation"""
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
-    permission_classes = [IsParticipant]
-
+    permission_classes = [IsAuthenticated, IsParticipantOfConversation]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['participants']
 
@@ -42,6 +42,11 @@ class ConversationViewSet(viewsets.ModelViewSet):
     
 class MessageViewSet(viewsets.ModelViewset):
     """Viewset for listing Message"""
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['sender', 'conversation']
+    permission_classes = [IsAuthenticated, IsParticipantOfConversation]
 
     def get_queryset(self):
         # Filter messages related to conversations the user participates in
@@ -51,8 +56,8 @@ class MessageViewSet(viewsets.ModelViewset):
         sender_id = request.data.get('sender')
         conversation_id = request.data.get('conversation')
         message_body = request.data.get('message_body')
-        filter_backends = [DjangoFilterBackend]
-        filterset_fields = ['sender', 'conversation']
+        
+        
 
         sender = User.objects.get(user_id=sender_id)
         conversation = Conversation.objects.get(conversation_id=conversation_id)
