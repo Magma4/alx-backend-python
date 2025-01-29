@@ -1,0 +1,15 @@
+INFO:root:2025-01-29 16:41:49.813925 - User: admin - Path: /admin/auth/user/
+INFO:root:2025-01-29 16:41:49.864094 - User: admin - Path: /admin/jsi18n/
+INFO:root:2025-01-29 16:41:54.866617 - User: admin - Path: /admin/auth/group/
+INFO:root:2025-01-29 16:41:54.883134 - User: admin - Path: /admin/jsi18n/
+INFO:root:2025-01-29 16:42:01.378396 - User: admin - Path: /admin/logout/
+INFO:root:2025-01-29 16:42:03.413041 - User: Anonymous - Path: /admin/
+INFO:root:2025-01-29 16:42:03.421556 - User: Anonymous - Path: /admin/login/
+INFO:root:2025-01-29 16:42:08.064601 - User: Anonymous - Path: /admin/login/
+INFO:root:2025-01-29 16:42:08.638401 - User: admin - Path: /admin/
+INFO:root:2025-01-29 16:42:08.673044 - User: Anonymous - Path: /apple-touch-icon-precomposed.png
+WARNING:django.request:Not Found: /apple-touch-icon-precomposed.png
+INFO:root:2025-01-29 16:42:08.680766 - User: Anonymous - Path: /apple-touch-icon.png
+WARNING:django.request:Not Found: /apple-touch-icon.png
+INFO:root:2025-01-29 16:42:12.071536 - User: admin - Path: /admin/auth/user/
+INFO:root:2025-01-29 16:42:12.090807 - User: admin - Path: /admin/jsi18n/
