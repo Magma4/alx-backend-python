@@ -13,3 +13,4 @@ INFO:root:2025-01-29 16:42:08.680766 - User: Anonymous - Path: /apple-touch-icon
 WARNING:django.request:Not Found: /apple-touch-icon.png
 INFO:root:2025-01-29 16:42:12.071536 - User: admin - Path: /admin/auth/user/
 INFO:root:2025-01-29 16:42:12.090807 - User: admin - Path: /admin/jsi18n/
+INFO:django.utils.autoreload:/Users/ray/alx/alx-backend-python/Django-Middleware-0x03/chats/middleware.py changed, reloading.

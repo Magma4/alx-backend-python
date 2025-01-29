@@ -1,0 +1,4 @@
+INFO:root:2025-01-29 16:45:45.937220 - User: admin - Path: /admin/auth/user/
+INFO:root:2025-01-29 16:45:45.986371 - User: admin - Path: /admin/jsi18n/
+INFO:root:2025-01-29 16:46:01.985998 - User: admin - Path: /admin/auth/group/
+INFO:root:2025-01-29 16:46:02.002718 - User: admin - Path: /admin/jsi18n/

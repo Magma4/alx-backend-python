@@ -5,7 +5,7 @@ class RequestLoggingMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
         logging.basicConfig(
-            filename="chats/requests.logs",
+            filename="chats/requests.log",
             level=logging.INFO,
         )
 
