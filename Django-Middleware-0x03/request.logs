@@ -1,0 +1,12 @@
+INFO:django.utils.autoreload:/Users/ray/alx/alx-backend-python/Django-Middleware-0x03/chats/middleware.py changed, reloading.
+INFO:root:2025-01-29 16:29:31.791699 - User: Anonymous - Path: /api/
+WARNING:django.request:Unauthorized: /api/
+INFO:root:2025-01-29 16:29:52.267247 - User: Anonymous - Path: /
+WARNING:django.request:Not Found: /
+INFO:root:2025-01-29 16:31:03.754133 - User: Anonymous - Path: /
+WARNING:django.request:Not Found: /
+INFO:root:2025-01-29 16:31:04.131153 - User: Anonymous - Path: /admin/login/
+INFO:root:2025-01-29 16:31:11.119652 - User: Anonymous - Path: /admin/login/
+INFO:root:2025-01-29 16:31:11.719053 - User: admin - Path: /admin/
+INFO:root:2025-01-29 16:31:22.370927 - User: admin - Path: /admin/auth/user/
+INFO:root:2025-01-29 16:31:22.411942 - User: admin - Path: /admin/jsi18n/
