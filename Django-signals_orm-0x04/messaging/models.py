@@ -9,8 +9,17 @@ class Message(models.Model):
     edited = models.BooleanField(default=False)
     edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="edited_messages")  # Track who edited the message
 
+    parent_message = models.ForeignKey(
+        'self', on_delete=models.CASCADE, null=True, blank=True, related_name="replies"
+    )
+
     def __str__(self):
         return f"Message from {self.sender} to {self.receiver} at {self.timestamp}"
+
+    def get_threaded_messages(self):
+        """ Recursively fetch all replies to a message """
+        replies = self.replies.prefetch_related('replies').all()
+        return replies
 
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications")
