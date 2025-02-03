@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from .serializers import MessageSerializer
 from .models import *
+from django.views.decorators.cache import cache_page
+
 
 
 @api_view(['DELETE'])
@@ -72,4 +74,18 @@ def unread_messages(request):
     unread_qs = unread_qs.only('id', 'sender_id', 'content', 'timestamp')
 
     serializer = MessageSerializer(unread_qs, many=True, context={'request': request})
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@cache_page(60)  # Cache this view for 60 seconds
+def conversation_messages(request, conversation_id):
+    """
+    Retrieve messages for a conversation.
+    This view is cached for 60 seconds.
+    """
+    # Assuming your Message model has a conversation foreign key or filter logic
+    messages_qs = Message.objects.filter(conversation_id=conversation_id)
+    serializer = MessageSerializer(messages_qs, many=True, context={'request': request})
     return Response(serializer.data)

@@ -5,4 +5,5 @@ urlpatterns = [
     path('delete-account/', delete_user, name='delete_user'),
     path('threaded-messages/', user_threaded_messages, name='user_threaded_messages'),
     path('inbox/unread/', unread_messages, name='unread_messages'),
+    path('conversations/<int:conversation_id>/messages/', conversation_messages, name='conversation_messages'),
 ]
