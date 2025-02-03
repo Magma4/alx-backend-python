@@ -17,7 +17,18 @@ def delete_user(request):
     user.delete()  # Triggers post_delete signal automatically
     return Response({"message": f"User {username} deleted successfully"}, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_threaded_messages(request):
+    # Retrieve top-level messages for the current user
+    # (for example, messages they sent that are not replies)
+    messages_qs = Message.objects.filter(
+        sender=request.user,
+        parent_message__isnull=True
+    ).select_related('sender', 'receiver').prefetch_related('replies')
 
+    serializer = MessageSerializer(messages_qs, many=True, context={'request': request})
+    return Response(serializer.data)
 class MessageViewSet(viewsets.ModelViewSet):
     # Optimize queries: join sender and receiver, and prefetch replies.
     queryset = Message.objects.all().select_related('sender', 'receiver').prefetch_related('replies')
