@@ -65,11 +65,10 @@ class MessageViewSet(viewsets.ModelViewSet):
 @permission_classes([IsAuthenticated])
 def unread_messages(request):
     """
-    Retrieve unread messages for the logged-in user.
+    Retrieve unread messages for the logged-in user using the custom manager.
     """
-    user = request.user
-    # Use the custom manager to get unread messages with optimized fields.
-    unread_qs = Message.unread.for_user(user)
+    # Use the custom manager to filter unread messages
+    unread_qs = Message.unread.unread_for_user(request.user)
 
     serializer = MessageSerializer(unread_qs, many=True, context={'request': request})
     return Response(serializer.data)
