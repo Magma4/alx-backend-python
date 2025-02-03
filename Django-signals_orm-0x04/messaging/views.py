@@ -60,3 +60,16 @@ class MessageViewSet(viewsets.ModelViewSet):
                 "replies": self.serialize_threaded(entry["replies"])
             })
         return serialized
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def unread_messages(request):
+    """
+    Retrieve unread messages for the logged-in user.
+    """
+    user = request.user
+    # Use the custom manager to get unread messages with optimized fields.
+    unread_qs = Message.unread.for_user(user)
+
+    serializer = MessageSerializer(unread_qs, many=True, context={'request': request})
+    return Response(serializer.data)

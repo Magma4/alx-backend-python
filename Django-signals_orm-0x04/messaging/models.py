@@ -1,6 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class UnreadMessagesManager(models.Manager):
+    def for_user(self, user):
+        """
+        Returns unread messages for the specified user, retrieving only the essential fields.
+        """
+        return self.filter(receiver=user, read=False).only('id', 'sender', 'content', 'timestamp')
 class Message(models.Model):
     sender = models.ForeignKey(
         User,
@@ -14,6 +20,13 @@ class Message(models.Model):
     )
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    read = models.BooleanField(default=False)  # Indicates whether the message has been read
+
+    # Default manager and custom unread messages manager
+    objects = models.Manager()
+    unread = UnreadMessagesManager()
+
     # Field for threaded conversations (null for top-level messages)
     parent_message = models.ForeignKey(
         'self',
