@@ -68,7 +68,7 @@ def unread_messages(request):
     Retrieve unread messages for the logged-in user using the custom manager.
     """
     # Use the custom manager to filter unread messages
-    unread_qs = Message.unread.unread_for_user(request.user)
+    unread_qs = unread_qs.only('id', 'sender_id', 'content', 'timestamp')
 
     serializer = MessageSerializer(unread_qs, many=True, context={'request': request})
     return Response(serializer.data)
