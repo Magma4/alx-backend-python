@@ -16,5 +16,5 @@ COPY . .
 # Expose the default Django port
 EXPOSE 8000
 
-# Command to start the Django app
+# Command to start the Django app project
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
