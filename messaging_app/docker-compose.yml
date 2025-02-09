@@ -1,35 +1,35 @@
-version: '3.8'
+version: '3'
 
 services:
-  db:
-    image: mysql:8.0
-    container_name: messaging_db
-    restart: always
-    environment:
-      MYSQL_DATABASE: ${MYSQL_DB}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: messaging_app
-    restart: always
-    depends_on:
-      - db
-    environment:
-      DATABASE_HOST: db
-      DATABASE_NAME: ${MYSQL_DB}
-      DATABASE_USER: ${MYSQL_USER}
-      DATABASE_PASSWORD: ${MYSQL_PASSWORD}
-    ports:
-      - "8000:8000"
+    command: ["python3", "manage.py", "runserver", "0.0.0.0:8000"]  # Add this line to run Django's server
     volumes:
       - .:/app
+    ports:
+      - "8000:8000"  # Expose port 8000 for the Django app
+    environment:
+      - DEBUG=True
+    env_file:
+      - .env
+    depends_on:
+      - db  # Ensure db service is ready before the web service starts
+
+  db:
+    image: mysql:latest
+    container_name: messaging_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DB: ${MYSQL_DB}
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"  # Expose port 3306 for MySQL
 
 volumes:
-  mysql_data:
+  db_data:
