@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: messaging_app
+    command: ["python3", "manage.py", "runserver", "0.0.0.0:8000"]  # Command to run Django development server
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"  # Expose port 8000 for the Django app
+    environment:
+      - DEBUG=True
+    env_file:
+      - .env
+    depends_on:
+      - db  # Ensure db service is started before web service
+
+  db:
+    image: mysql:latest
+    container_name: messaging_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DB: ${MYSQL_DB}
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"  # Expose port 3306 for MySQL
+
+volumes:
+  db_data:
