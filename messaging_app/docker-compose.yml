@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: messaging_app
-    command: ["python3", "manage.py", "runserver", "0.0.0.0:8000"]  # Add this line to run Django's server
+    command: ["python3 manage.py runserver"]  # Add this line to run Django's server
     volumes:
       - .:/app
     ports:
