@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.utils.timezone import now
 import uuid
 
@@ -11,13 +11,17 @@ class User(AbstractUser):
         ('host', 'Host'),
         ('admin', 'Admin'),
     )
-    
+
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True, blank=False)
     password = models.CharField(max_length=128, blank=False)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     role = models.CharField(max_length=10, choices=ROLES, default='guest')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    # Add related_name to avoid conflicts with auth.User
+    groups = models.ManyToManyField(Group, related_name="custom_user_groups", blank=True)
+    user_permissions = models.ManyToManyField(Permission, related_name="custom_user_permissions", blank=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.username})"

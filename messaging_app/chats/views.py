@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status
-from models import Conversation, Message
+from .models import Conversation, Message
 from django.contrib.auth.models import User
 from chats.serializers import ConversationSerializer, MessageSerializer
 from rest_framework.response import Response
@@ -28,12 +28,12 @@ class ConversationViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         # Filter conversations where the user is a participant
         return Conversation.objects.filter(participants=self.request.user)
-    
+
     def create(self, request, *args, **kwargs):
         participants_info = request.data.get('participants', [])
         if len(participants_info) < 2:
             return Response({"error": "Participants should be more than 1."}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         participants = User.objects.filter(user_id__in=participants_info)
 
         if participants.count() != len(participants_info):
@@ -46,8 +46,8 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(conversation)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-class MessageViewSet(viewsets.ModelViewset):
+
+class MessageViewSet(viewsets.ModelViewSet):
     """Viewset for listing Message"""
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
@@ -60,13 +60,13 @@ class MessageViewSet(viewsets.ModelViewset):
     def get_queryset(self):
         # Filter messages related to conversations the user participates in
         return Message.objects.filter(conversation__participants=self.request.user)
-    
+
     def create(self, request, *args, **kwargs):
         sender_id = request.data.get('sender')
         conversation_id = request.data.get('conversation')
         message_body = request.data.get('message_body')
-        
-        
+
+
 
         sender = User.objects.get(user_id=sender_id)
         conversation = Conversation.objects.get(conversation_id=conversation_id)
