@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: messaging_app
-    command: ["python3 manage.py runserver"]  # Add this line to run Django's server
+    command: ["python3", "manage.py", "runserver", "0.0.0.0:8000"]  # Command to run Django development server
     volumes:
       - .:/app
     ports:
@@ -16,7 +16,7 @@ services:
     env_file:
       - .env
     depends_on:
-      - db  # Ensure db service is ready before the web service starts
+      - db  # Ensure db service is started before web service
 
   db:
     image: mysql:latest
