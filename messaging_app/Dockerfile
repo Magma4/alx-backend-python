@@ -5,10 +5,10 @@ FROM python:3.10
 WORKDIR /app
 
 # Copy the requirements file into the container
-COPY requirements.txt .
+COPY Requirements.txt .
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r Requirements.txt
 
 # Copy the entire Django app into the container
 COPY . .
@@ -18,4 +18,3 @@ EXPOSE 8000
 
 # Command to start the Django app
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-
